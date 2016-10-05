@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:shiro="http://shiro.apache.org/tags"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head">
+		<script type="text/javascript">
+			function handleSaveRequest(xhr, status, args) {
+				if (args.create == true) {
+					PF('createDialogVar').hide();
+				} else if (args.update == true) {
+					PF('updateDialogVar').hide();
+				}
+			}
+		</script>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:growl autoUpdate="true" showDetail="true" />
+		<h:form id="dataForm" prependId="false">
+			<p:dataTable value="#{roleBean.roleList}" var="_role" paginator="true" rows="20"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Operations}"
+				rowsPerPageTemplate="10,20,50,100,200"
+				currentPageReportTemplate="({startRecord} - {endRecord} of {totalRecords})">
+				<p:column width="130" sortBy="#{_role.name}" filterBy="#{_role.name}">
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:outputText value="#{_role.name}" />
+				</p:column>
+				<p:column width="200" filterBy="#{_role.description}" filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="Description" />
+					</f:facet>
+					<h:outputText value="#{_role.description}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Permissions" />
+					</f:facet>
+					<h:outputText value="#{_role.viewPermissions}" />
+				</p:column>
+				<p:column width="80" style="text-align:center" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="Actions" />
+					</f:facet>
+					<shiro:hasPermission name="role:update">
+						<p:commandLink oncomplete="PF('updateDialogVar').show()" value="Update" style="margin-right:10px;"
+							actionListener="#{roleBean.updateEvent(_role.id)}" update=":updateForm" />
+						<p:commandLink value="Delete" icon="ui-icon-plusthick"
+							actionListener="#{roleBean.deleteRoleById(_role.id)}" update=":dataForm" />
+					</shiro:hasPermission>
+				</p:column>
+
+				<f:facet name="{Operations}">
+					<shiro:hasPermission name="role:create">
+						<p:commandButton value="Create" icon="ui-icon-plusthick" style="float: right;"
+							actionListener="#{roleBean.createEvent()}" oncomplete="PF('createDialogVar').show();"
+							update=":createForm" />
+						<div style="clear: both;" />
+					</shiro:hasPermission>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog id="create_dialog_id" header="Create Role" modal="true" closeOnEscape="true"
+			widgetVar="createDialogVar" dynamic="true" resizable="false" width="600">
+			<p:outputPanel>
+				<h:form id="createForm">
+					<h:panelGrid id="createPanelGrid" columns="2">
+						<p:outputLabel value="权限名称" />
+						<p:inputText value="#{roleBean.role.name}" required="true" label="Role Name" />
+
+						<p:outputLabel value="权限说明" />
+						<p:inputText value="#{roleBean.role.description}" required="true" label="Description" />
+
+						<p:outputLabel value="权限设置" />
+						<p:pickList id="permission_picklist_id" value="#{roleBean.permissionPickListSource}" var="_permission"
+							itemValue="#{_permission}" itemLabel="#{_permission}" showCheckbox="true">
+							<f:facet name="sourceCaption">权限列表</f:facet>
+							<f:facet name="targetCaption">所选权限</f:facet>
+						</p:pickList>
+					</h:panelGrid>
+					<h:panelGrid columns="2" style="margin:0px auto 0px auto;">
+						<p:commandButton value="提交" icon="ui-icon-disk" actionListener="#{roleBean.createRole()}"
+							update=":dataForm" oncomplete="handleSaveRequest(xhr, status, args)" />
+						<p:commandButton value="取消" immediate="true" oncomplete="PF('updateDialogVar').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+		</p:dialog>
+
+		<p:dialog id="update_dialog_id" header="Update Role" modal="true" closeOnEscape="true"
+			widgetVar="updateDialogVar" dynamic="true" resizable="false" width="600">
+			<p:outputPanel>
+				<h:form id="updateForm">
+					<h:panelGrid id="createPanelGrid" columns="2">
+						<p:outputLabel value="权限名称" />
+						<p:inputText value="#{roleBean.role.name}" required="true" label="Role Name" />
+
+						<p:outputLabel value="权限说明" />
+						<p:inputText value="#{roleBean.role.description}" required="true" label="Description" />
+
+						<p:outputLabel value="权限设置" />
+						<p:pickList id="permission_picklist_id" value="#{roleBean.permissionPickListSource}" var="_permission"
+							itemValue="#{_permission}" itemLabel="#{_permission}" showCheckbox="true">
+							<f:facet name="sourceCaption">权限列表</f:facet>
+							<f:facet name="targetCaption">所选权限</f:facet>
+						</p:pickList>
+					</h:panelGrid>
+					<h:panelGrid columns="2" style="margin:0px auto 0px auto;">
+						<p:commandButton value="提交" icon="ui-icon-disk" actionListener="#{roleBean.updateRole()}"
+							update=":dataForm" oncomplete="handleSaveRequest(xhr, status, args)" />
+						<p:commandButton value="取消" immediate="true" oncomplete="PF('updateDialogVar').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="content">
+		<p:tabView style="height:440px">
+			<p:tab title="Account">
+				<h:form>
+					<h:panelGrid columns="2" id="grid">
+						<h:outputLabel value="Account" for="account_p" />
+						<h:outputText id="account_p" value="#{myPreferences.user.name}" />
+
+						<h:outputLabel value="Current Password" for="currentPwd">
+							<h:outputLabel value="*" style="color:red" />
+						</h:outputLabel>
+						<p:password id="currentPwd" label="Current Password" value="#{myPreferences.oldPassword}" feedback="false" required="true" />
+
+						<h:outputLabel value="New Password" for="newPassword">
+							<h:outputLabel value="*" style="color:red" />
+						</h:outputLabel>
+						<p:password id="newPassword" label="New Password" value="#{myPreferences.newPassword}" feedback="true" required="true" />
+
+						<h:outputLabel value="Confirm New Password" for="confirmPassword">
+							<h:outputLabel value="*" style="color:red" />
+						</h:outputLabel>
+						<p:password id="confirmPassword" label="Confirm New Password" value="#{myPreferences.newPasswordConfirmed}" required="true" />
+					</h:panelGrid>
+					<h:panelGroup style="float:left;margin:10px 5px 5px 120px;">
+						<p:commandButton value="Save" action="#{myPreferences.changePassword}" style="float:left;margin-top:10px;margin-left:28px" icon="ui-icon-disk" />
+						<p:button name="Back" value="Cancel" outcome="/home" style="float:left;margin:10px" icon="ui-icon-cancel" />
+					</h:panelGroup>
+				</h:form>
+			</p:tab>
+			<p:tab title="General">
+				<h:form>
+					<h:panelGrid columns="2" id="grid">
+						<h:outputLabel value="Account" for="account" />
+						<h:outputText id="account" value="#{myPreferences.user.name}" />
+						<h:outputLabel value="Name" for="name" />
+						<p:inputText id="name" value="#{myPreferences.user.realName}" />
+						<h:outputLabel value="EmployeeId" for="employeeId" />
+						<p:inputText id="employeeId" value="#{myPreferences.user.employeeId}" />
+						<h:outputLabel value="Mobile" for="mobile" />
+						<p:inputText id="mobile" value="#{myPreferences.user.mobile}" />
+						<h:outputLabel value="Email" for="email" />
+						<p:inputText id="email" value="#{myPreferences.user.email}" />
+					</h:panelGrid>
+					<h:panelGroup style="float:left;margin:10px 5px 5px 44px;">
+						<p:commandButton value="Save" action="#{myPreferences.changePassword}" style="float:left;margin-top:10px;margin-left:28px" icon="ui-icon-disk" />
+						<p:button name="Back" value="Cancel" outcome="/home" style="float:left;margin:10px" icon="ui-icon-cancel" />
+					</h:panelGroup>
+				</h:form>
+			</p:tab>
+		</p:tabView>
+	</ui:define>
+</ui:composition>

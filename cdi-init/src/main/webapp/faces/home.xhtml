@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:shiro="http://shiro.apache.org/tags"
+	template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="content">
+		<div class="info">
+			<p:panel style="min-height: 200px;">
+				<h:panelGrid columns="2">
+					<h:graphicImage value="/resources/gfx/view.png"  />
+					<p style="margin-top: 12px; margin-bottom: 12px;">
+						<strong>Cdi-init</strong>
+					</p>
+					<ul class="bullets" style="margin-top: 12px; margin-bottom: 12px;">
+						<li>jsf,cdi,deltaspike,ejb,jpa,shiro</li>
+					</ul>
+
+				</h:panelGrid>
+			</p:panel>
+		</div>
+
+	</ui:define>
+</ui:composition>

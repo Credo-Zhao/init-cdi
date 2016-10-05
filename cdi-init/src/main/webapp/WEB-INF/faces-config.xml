@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+	<!-- 基于mykong的shiro jsf标签扩展 -->
+	<component>
+		<component-type>org.zhaoqian.security.shiro.extension.tags.PrincipalTag</component-type>
+		<component-class>org.zhaoqian.security.shiro.extension.tags.PrincipalTag</component-class>
+	</component>
+
+	<application>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+
+		<resource-bundle>
+			<base-name>messages</base-name>
+			<var>messages</var>
+		</resource-bundle>
+		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
+		<navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+		<view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+		<el-resolver>org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>
+		<resource-bundle>
+			<base-name>build</base-name>
+			<var>build</var>
+		</resource-bundle>
+	</application>
+
+	<!-- Register our exception handler -->
+    <factory>
+        <exception-handler-factory>org.zhaoqian.common.exception.handler.DeltaSpikeExceptionHandlerFactory</exception-handler-factory>
+    </factory>
+
+</faces-config>

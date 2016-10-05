@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://java.sun.com/xml/ns/persistence
+        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="primary">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/cdi-init</jta-data-source>
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.generate_statistics" value="false" />
+		
+			<!-- Enable 2LC -->
+			<property name="hibernate.cache.use_second_level_cache" value="true" />
+			<property name="hibernate.cache.use_query_cache" value="true" />		
+			<property name="hibernate.cache.region.factory_class" value="org.jboss.as.jpa.hibernate4.infinispan.InfinispanRegionFactory" />		
+			<property name="hibernate.cache.infinispan.use_synchronization" value="false" />			
+			<property name="hibernate.cache.infinispan.statistics" value="true" />			
+			<property name="hibernate.cache.use_minimal_puts" value="true" />
+			<property name="hibernate.cache.infinispan.entity.eviction.strategy" value="LRU" />
+			<property name="hibernate.cache.infinispan.entity.eviction.wake_up_interval" value="2000" />
+			<property name="hibernate.cache.infinispan.entity.eviction.max_entries" value="5000" />
+			<property name="hibernate.cache.infinispan.entity.expiration.lifespan" value="60000" />
+			<property name="hibernate.cache.infinispan.entity.expiration.max_idle" value="30000" />
+					
+			<!-- Enable Batching -->
+			<property name="hibernate.jdbc.batch_size" value="20" />
+			<property name="hibernate.default_batch_fetch_size" value="10" />	
+					
+		</properties>
+	</persistence-unit>
+</persistence>

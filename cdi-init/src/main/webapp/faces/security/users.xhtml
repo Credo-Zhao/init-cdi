@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:shiro="http://shiro.apache.org/tags"
+	xmlns:pe="http://primefaces.org/ui/extensions" template="/WEB-INF/templates/template.xhtml">
+
+	<ui:define name="head">
+		<script type="text/javascript">
+			function handleSaveRequest(xhr, status, args) {
+				if (args.create == true) {
+					PF('createDialogVar').hide();
+				} else if (args.update == true) {
+					PF('updateDialogVar').hide();
+				}else if (args.changePwd == true) {
+					PF('changePwdDialogVar').hide();
+				}
+			}
+		</script>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:growl autoUpdate="false"  />
+		<h:form id="dataForm" prependId="false">
+			<p:dataTable value="#{userBean.userList}" var="_user" paginator="true" rows="20"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Operations}"
+				rowsPerPageTemplate="10,20,50,100,200"
+				currentPageReportTemplate="({startRecord} - {endRecord} of {totalRecords})">
+				<p:column width="200" sortBy="#{_user.name}" filterBy="#{_user.name}">
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:outputText value="#{_user.name}" />
+				</p:column>
+				<p:column width="200" filterBy="#{_user.realName}" filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="RealName" />
+					</f:facet>
+					<h:outputText value="#{_user.realName}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Mobile" />
+					</f:facet>
+					<h:outputText value="#{_user.mobile}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Role" />
+					</f:facet>
+					<h:outputText value="#{_user.viewRoles}" />
+				</p:column>
+				<p:column width="100" sortBy="#{_user.lastLogin}">
+					<f:facet name="header">
+						<h:outputText value="Last Login" />
+					</f:facet>
+					<h:outputText value="#{_user.lastLogin}">
+						<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column width="150" style="text-align:center" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="Actions" />
+					</f:facet>
+					<shiro:hasPermission name="user:update">
+						<p:commandLink oncomplete="PF('updateDialogVar').show()" value="Update" style="margin-right:10px;"
+							actionListener="#{userBean.updateEvent(_user.id)}" update=":updateForm" />
+						<p:commandLink value="Password" style="margin-right:10px;" oncomplete="PF('changePwdDialogVar').show()"
+							actionListener="#{userBean.changePasswordEvent(_user.id)}" update=":changePwdForm" />
+					</shiro:hasPermission>
+				</p:column>
+
+				<f:facet name="{Operations}">
+					<shiro:hasPermission name="user:create">
+						<p:commandButton value="Create" icon="ui-icon-plusthick" style="float: right;"
+							actionListener="#{userBean.createEvent()}" oncomplete="PF('createDialogVar').show();"
+							update=":createForm" />
+						<div style="clear: both;" />
+					</shiro:hasPermission>
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<p:dialog id="create_dialog_id" header="Create Role" modal="true" closeOnEscape="true"
+			widgetVar="createDialogVar" dynamic="true" resizable="false" width="600">
+			<h:form id="createForm">
+				<p:messages autoUpdate="true"  />
+				<h:panelGrid id="createPanelGrid" columns="2">
+					<p:outputLabel value="Account[Email]" />
+					<p:inputText value="#{userBean.user.name}" required="true" label="Role Name" />
+
+					<h:outputLabel value="Password 1: *" />
+					<p:password value="#{userBean.user.password}" label="Password 1" required="true" />
+
+					<h:outputLabel value="Password 2: *" />
+					<p:password value="#{userBean.user.secondInputPassword}" label="Password 2" required="true" />
+
+					<p:outputLabel value="RealName" />
+					<p:inputText value="#{userBean.user.realName}" required="true" label="RealName" />
+
+					<p:outputLabel value="Mobile" />
+					<p:inputText value="#{userBean.user.mobile}" />
+
+					<p:outputLabel value="Roles" />
+					<p:pickList value="#{userBean.rolePickListSource}" var="_roles" itemValue="#{_roles}"
+						itemLabel="#{_roles}" showCheckbox="true">
+						<f:facet name="sourceCaption">角色列表</f:facet>
+						<f:facet name="targetCaption">所选角色</f:facet>
+					</p:pickList>
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" style="margin:0px auto 0px auto;">
+					<p:commandButton value="提交" icon="ui-icon-disk" actionListener="#{userBean.createUser()}"
+						update=":dataForm,:createForm" oncomplete="handleSaveRequest(xhr, status, args);" />
+					<p:commandButton value="取消" immediate="true" oncomplete="PF('createDialogVar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="update_dialog_id" header="Update Role" modal="true" closeOnEscape="true"
+			widgetVar="updateDialogVar" dynamic="true" resizable="false" width="600">
+			<p:outputPanel>
+				<h:form id="updateForm">
+					<p:messages autoUpdate="true" />
+					<h:panelGrid id="createPanelGrid" columns="2">
+						<p:outputLabel value="Account[Email]" />
+						<p:inputText value="#{userBean.user.name}" required="true" label="Role Name" />
+
+						<p:outputLabel value="RealName" />
+						<p:inputText value="#{userBean.user.realName}" required="true" label="RealName" />
+
+						<p:outputLabel value="Mobile" />
+						<p:inputText value="#{userBean.user.mobile}" />
+
+						<p:outputLabel value="Roles" />
+						<p:pickList value="#{userBean.rolePickListSource}" var="_roles" itemValue="#{_roles}"
+							itemLabel="#{_roles}" showCheckbox="true">
+							<f:facet name="sourceCaption">角色列表</f:facet>
+							<f:facet name="targetCaption">所选角色</f:facet>
+						</p:pickList>
+					</h:panelGrid>
+					<h:panelGrid columns="2" style="margin:0px auto 0px auto;">
+						<p:commandButton value="提交" icon="ui-icon-disk" actionListener="#{userBean.updateUser()}"
+							update=":dataForm,:updateForm" oncomplete="handleSaveRequest(xhr, status, args);" />
+						<p:commandButton value="取消" immediate="true" oncomplete="PF('updateDialogVar').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+		</p:dialog>
+
+		<p:dialog id="change_pwd_id" header="Update Role" modal="true" closeOnEscape="true"
+			widgetVar="changePwdDialogVar" dynamic="true" resizable="false" width="600">
+			<p:outputPanel>
+				<h:form id="changePwdForm">
+					<p:messages autoUpdate="true" showDetail="true" />
+					<h:panelGrid id="createPanelGrid" columns="2">
+						<p:outputLabel value="Account[Email]" />
+						<h:outputText value="#{userBean.user.name}" />
+
+						<h:outputLabel value="Password 1: *" />
+						<p:password value="#{userBean.user.password}" label="Password 1" required="true" />
+
+						<h:outputLabel value="Password 2: *" />
+						<p:password value="#{userBean.user.secondInputPassword}" label="Password 2" required="true" />
+
+						<p:outputLabel value="RealName" />
+						<h:outputText value="#{userBean.user.realName}" />
+
+						<p:outputLabel value="Mobile" />
+						<h:outputText value="#{userBean.user.mobile}" />
+					</h:panelGrid>
+					<h:panelGrid columns="2" style="margin:0px auto 0px auto;">
+						<p:commandButton value="提交" icon="ui-icon-disk" actionListener="#{userBean.changePassword()}"
+							update=":dataForm,:changePwdForm" oncomplete="handleSaveRequest(xhr, status, args);" />
+						<p:commandButton value="取消" immediate="true" oncomplete="PF('changePwdDialogVar').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:outputPanel>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

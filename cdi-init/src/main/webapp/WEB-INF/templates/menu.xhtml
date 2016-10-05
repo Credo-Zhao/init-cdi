@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:shiro="http://shiro.apache.org/tags" xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="headerForm">
+		<div id="header">
+			<h:panelGrid columns="2" width="100%">
+				<h:panelGroup>
+					<a href="#{request.contextPath}"> <h:graphicImage value="/resources/gfx/logo.png"
+							style="height:30px;" />
+					</a>
+				</h:panelGroup>
+			</h:panelGrid>
+		</div>
+		<shiro:authenticated>
+			<p:menubar style="margin-bottom:8px;">
+				<shiro:hasPermission name="user:view">
+					<p:submenu label="File" icon="ui-icon-document">
+						<p:submenu label="New" icon="ui-icon-contact">
+							<p:menuitem value="Project" url="#" />
+							<p:menuitem value="Other" url="#" />
+						</p:submenu>
+						<p:menuitem value="Open" url="#" />
+						<p:separator />
+						<p:menuitem value="Quit" url="#" />
+					</p:submenu>
+				</shiro:hasPermission>
+				<shiro:hasPermission name="role:view">
+					<p:submenu label="Edit" icon="ui-icon-pencil">
+						<p:menuitem value="Undo" url="#" icon="ui-icon-arrowreturnthick-1-w" />
+						<p:menuitem value="Redo" url="#" icon="ui-icon-arrowreturnthick-1-e" />
+					</p:submenu>
+				</shiro:hasPermission>
+
+				<p:submenu label="Help" icon="ui-icon-help">
+					<p:menuitem value="Contents" url="#" />
+					<p:submenu label="Search" icon="ui-icon-search">
+						<p:submenu label="Text">
+							<p:menuitem value="Workspace" url="#" />
+						</p:submenu>
+						<p:menuitem value="File" url="#" />
+					</p:submenu>
+				</p:submenu>
+
+				<p:submenu label="Actions" icon="ui-icon-gear">
+					<p:submenu label="Ajax" icon="ui-icon-refresh">
+						<p:menuitem value="Save" icon="ui-icon-disk" />
+						<p:menuitem value="Update" icon="ui-icon-arrowrefresh-1-w" />
+					</p:submenu>
+					<p:submenu label="Non-Ajax" icon="ui-icon-newwin">
+						<p:menuitem value="Delete" icon="ui-icon-close" ajax="false" />
+					</p:submenu>
+				</p:submenu>
+
+				<p:menuitem value="Quit" url="http://www.primefaces.org" icon="ui-icon-close" />
+
+				<p:submenu label="用户权限" icon="ui-icon-pencil" style="margin-left:6px;margin-right:6px;">
+					<p:menuitem value="用户管理" url="/faces/security/users.jsf" icon="ui-icon-person" />
+					<p:menuitem value="权限管理" url="/faces/security/roles.jsf" icon="ui-icon-key" />
+				</p:submenu>
+
+				<f:facet name="options">
+					<h:outputLabel value="#{currentUserName}" />
+					<p:commandButton action="#{loginBean.logout()}" value="Logout" icon="ui-icon-power" 
+						style="margin-left:12px;background-color: #d9534f;border-color: #d43f3a;color: #fff;background-image: none;text-shadow:none;">
+						<p:confirm header="Logout Confirmation" message="Are you sure you want to logout?" icon="ui-icon-alert" />
+					</p:commandButton>
+				</f:facet>
+			</p:menubar>
+		</shiro:authenticated>
+	</h:form>
+</ui:composition>

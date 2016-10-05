@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui"
+	xmlns:shiro="http://shiro.apache.org/tags" template="/WEB-INF/templates/template.xhtml">
+
+	<ui:param name="pageId" value="login" />
+
+	<ui:define name="head">
+
+		<shiro:authenticated>
+			<ui:fragment>
+				<meta http-equiv="Refresh" content="0; URL=home.jsf" />
+			</ui:fragment>
+		</shiro:authenticated>
+
+		<script type="text/javascript">
+			function refreshImage(){
+				document.getElementById("loginForm:captchaImage").setAttribute("src", "#{request.contextPath}/Kaptcha.jpg?"+Math.round(Math.random()*10000));
+			}
+		</script>
+
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="loginForm">
+			<p:growl autoUpdate="true" />
+			<p:panel header="Please Login Here ..." style="width: 600px;margin-left: auto;margin-right: auto;margin-top: 100px;">
+				<shiro:notAuthenticated>
+					<h:panelGrid columns="3">
+						<h:panelGrid columns="2" columnClasses="columnClass1">
+							<h:outputLabel for="username" value="User Name" />
+							<p:inputText id="username" value="#{loginBean.username}" label="User Name" style="width:239px;" />
+
+							<h:outputLabel for="password" value="Password" />
+							<p:password id="password" feedback="false" value="#{loginBean.password}" label="Password" style="width:239px;"/>
+
+							<ui:remove>
+								<h:outputLabel for="rememberMe" value="Remember Me" />
+								<h:selectBooleanCheckbox id="rememberMe" value="#{loginBean.rememberMe}" label="Remember Me" />
+							</ui:remove>
+
+							<h:outputLabel for="captchaText" value="Verify Code" />
+							<p:inputText id="captchaText" value="#{loginBean.captcha}" style="width:239px;"/>
+
+							<h:outputText value="" />
+							<p:commandButton id="loginBtn" value="Login" actionListener="#{loginBean.login()}" ajax="false"
+								icon="ui-icon-person" />
+						</h:panelGrid>
+						<p:spacer width="15px" />
+						<h:panelGrid>
+							<h:graphicImage id="captchaImage" onclick="javascript:refreshImage()" value="/Kaptcha.jpg" />
+							<h:outputText style="color: #00529b;" value="Click the image to obtain a new code." />
+						</h:panelGrid>
+					</h:panelGrid>
+				</shiro:notAuthenticated>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
